@@ -15,6 +15,10 @@ const (
 
 	// MemStoreKey defines the in-memory store key
 	MemStoreKey = "mem_paper"
+
+	// Keep track of the index of posts
+	PaperKey      = "Paper-value-"
+	PaperCountKey = "Paper-count-"
 )
 
 func KeyPrefix(p string) []byte {
