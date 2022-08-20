@@ -1,6 +1,7 @@
 syntax = "proto3";
 package paper.paper;
 
+import "paper/paper.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -15,7 +16,12 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/paper/paper/params";
   }
-  // this line is used by starport scaffolding # 2
+  // Queries a list of Papers items.
+	rpc Papers(QueryPapersRequest) returns (QueryPapersResponse) {
+		option (google.api.http).get = "/paper/paper/papers";
+	}
+
+// this line is used by starport scaffolding # 2
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -25,6 +31,23 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryPapersRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryPapersResponse {
+  string host = 1;
+  string paperName = 2;
+  string owner = 3;
+  string price = 4;
+
+  // Returning a list of posts
+  repeated Paper Paper = 5;
+
+  // Adding pagination to response
+  cosmos.base.query.v1beta1.PageResponse pagination = 6;
 }
 
 // this line is used by starport scaffolding # 3

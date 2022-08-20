@@ -1,6 +1,11 @@
 /* eslint-disable */
 import { Reader, Writer } from "protobufjs/minimal";
 import { Params } from "../paper/params";
+import {
+  PageRequest,
+  PageResponse,
+} from "../cosmos/base/query/v1beta1/pagination";
+import { Paper } from "../paper/paper";
 
 export const protobufPackage = "paper.paper";
 
@@ -11,6 +16,21 @@ export interface QueryParamsRequest {}
 export interface QueryParamsResponse {
   /** params holds all the parameters of this module. */
   params: Params | undefined;
+}
+
+export interface QueryPapersRequest {
+  pagination: PageRequest | undefined;
+}
+
+export interface QueryPapersResponse {
+  host: string;
+  paperName: string;
+  owner: string;
+  price: string;
+  /** Returning a list of posts */
+  Paper: Paper[];
+  /** Adding pagination to response */
+  pagination: PageResponse | undefined;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -110,10 +130,234 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryPapersRequest: object = {};
+
+export const QueryPapersRequest = {
+  encode(
+    message: QueryPapersRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryPapersRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryPapersRequest } as QueryPapersRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPapersRequest {
+    const message = { ...baseQueryPapersRequest } as QueryPapersRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryPapersRequest): unknown {
+    const obj: any = {};
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageRequest.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryPapersRequest>): QueryPapersRequest {
+    const message = { ...baseQueryPapersRequest } as QueryPapersRequest;
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageRequest.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
+const baseQueryPapersResponse: object = {
+  host: "",
+  paperName: "",
+  owner: "",
+  price: "",
+};
+
+export const QueryPapersResponse = {
+  encode(
+    message: QueryPapersResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.host !== "") {
+      writer.uint32(10).string(message.host);
+    }
+    if (message.paperName !== "") {
+      writer.uint32(18).string(message.paperName);
+    }
+    if (message.owner !== "") {
+      writer.uint32(26).string(message.owner);
+    }
+    if (message.price !== "") {
+      writer.uint32(34).string(message.price);
+    }
+    for (const v of message.Paper) {
+      Paper.encode(v!, writer.uint32(42).fork()).ldelim();
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(
+        message.pagination,
+        writer.uint32(50).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): QueryPapersResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseQueryPapersResponse } as QueryPapersResponse;
+    message.Paper = [];
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.host = reader.string();
+          break;
+        case 2:
+          message.paperName = reader.string();
+          break;
+        case 3:
+          message.owner = reader.string();
+          break;
+        case 4:
+          message.price = reader.string();
+          break;
+        case 5:
+          message.Paper.push(Paper.decode(reader, reader.uint32()));
+          break;
+        case 6:
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPapersResponse {
+    const message = { ...baseQueryPapersResponse } as QueryPapersResponse;
+    message.Paper = [];
+    if (object.host !== undefined && object.host !== null) {
+      message.host = String(object.host);
+    } else {
+      message.host = "";
+    }
+    if (object.paperName !== undefined && object.paperName !== null) {
+      message.paperName = String(object.paperName);
+    } else {
+      message.paperName = "";
+    }
+    if (object.owner !== undefined && object.owner !== null) {
+      message.owner = String(object.owner);
+    } else {
+      message.owner = "";
+    }
+    if (object.price !== undefined && object.price !== null) {
+      message.price = String(object.price);
+    } else {
+      message.price = "";
+    }
+    if (object.Paper !== undefined && object.Paper !== null) {
+      for (const e of object.Paper) {
+        message.Paper.push(Paper.fromJSON(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromJSON(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryPapersResponse): unknown {
+    const obj: any = {};
+    message.host !== undefined && (obj.host = message.host);
+    message.paperName !== undefined && (obj.paperName = message.paperName);
+    message.owner !== undefined && (obj.owner = message.owner);
+    message.price !== undefined && (obj.price = message.price);
+    if (message.Paper) {
+      obj.Paper = message.Paper.map((e) => (e ? Paper.toJSON(e) : undefined));
+    } else {
+      obj.Paper = [];
+    }
+    message.pagination !== undefined &&
+      (obj.pagination = message.pagination
+        ? PageResponse.toJSON(message.pagination)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<QueryPapersResponse>): QueryPapersResponse {
+    const message = { ...baseQueryPapersResponse } as QueryPapersResponse;
+    message.Paper = [];
+    if (object.host !== undefined && object.host !== null) {
+      message.host = object.host;
+    } else {
+      message.host = "";
+    }
+    if (object.paperName !== undefined && object.paperName !== null) {
+      message.paperName = object.paperName;
+    } else {
+      message.paperName = "";
+    }
+    if (object.owner !== undefined && object.owner !== null) {
+      message.owner = object.owner;
+    } else {
+      message.owner = "";
+    }
+    if (object.price !== undefined && object.price !== null) {
+      message.price = object.price;
+    } else {
+      message.price = "";
+    }
+    if (object.Paper !== undefined && object.Paper !== null) {
+      for (const e of object.Paper) {
+        message.Paper.push(Paper.fromPartial(e));
+      }
+    }
+    if (object.pagination !== undefined && object.pagination !== null) {
+      message.pagination = PageResponse.fromPartial(object.pagination);
+    } else {
+      message.pagination = undefined;
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Queries a list of Papers items. */
+  Papers(request: QueryPapersRequest): Promise<QueryPapersResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -125,6 +369,12 @@ export class QueryClientImpl implements Query {
     const data = QueryParamsRequest.encode(request).finish();
     const promise = this.rpc.request("paper.paper.Query", "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new Reader(data)));
+  }
+
+  Papers(request: QueryPapersRequest): Promise<QueryPapersResponse> {
+    const data = QueryPapersRequest.encode(request).finish();
+    const promise = this.rpc.request("paper.paper.Query", "Papers", data);
+    return promise.then((data) => QueryPapersResponse.decode(new Reader(data)));
   }
 }
 
