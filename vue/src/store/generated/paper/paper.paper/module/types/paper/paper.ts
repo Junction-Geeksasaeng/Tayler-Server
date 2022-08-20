@@ -1,53 +1,54 @@
 /* eslint-disable */
-import { Reader, util, configure, Writer } from "protobufjs/minimal";
 import * as Long from "long";
+import { util, configure, Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "paper.paper";
 
-export interface MsgCreatePaper {
+export interface Paper {
   creator: string;
+  id: number;
   host: string;
   paperName: string;
   owner: string;
   price: string;
 }
 
-export interface MsgCreatePaperResponse {
-  id: number;
-}
-
-const baseMsgCreatePaper: object = {
+const basePaper: object = {
   creator: "",
+  id: 0,
   host: "",
   paperName: "",
   owner: "",
   price: "",
 };
 
-export const MsgCreatePaper = {
-  encode(message: MsgCreatePaper, writer: Writer = Writer.create()): Writer {
+export const Paper = {
+  encode(message: Paper, writer: Writer = Writer.create()): Writer {
     if (message.creator !== "") {
       writer.uint32(10).string(message.creator);
     }
+    if (message.id !== 0) {
+      writer.uint32(16).uint64(message.id);
+    }
     if (message.host !== "") {
-      writer.uint32(18).string(message.host);
+      writer.uint32(26).string(message.host);
     }
     if (message.paperName !== "") {
-      writer.uint32(26).string(message.paperName);
+      writer.uint32(34).string(message.paperName);
     }
     if (message.owner !== "") {
-      writer.uint32(34).string(message.owner);
+      writer.uint32(42).string(message.owner);
     }
     if (message.price !== "") {
-      writer.uint32(42).string(message.price);
+      writer.uint32(50).string(message.price);
     }
     return writer;
   },
 
-  decode(input: Reader | Uint8Array, length?: number): MsgCreatePaper {
+  decode(input: Reader | Uint8Array, length?: number): Paper {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreatePaper } as MsgCreatePaper;
+    const message = { ...basePaper } as Paper;
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -55,15 +56,18 @@ export const MsgCreatePaper = {
           message.creator = reader.string();
           break;
         case 2:
-          message.host = reader.string();
+          message.id = longToNumber(reader.uint64() as Long);
           break;
         case 3:
-          message.paperName = reader.string();
+          message.host = reader.string();
           break;
         case 4:
-          message.owner = reader.string();
+          message.paperName = reader.string();
           break;
         case 5:
+          message.owner = reader.string();
+          break;
+        case 6:
           message.price = reader.string();
           break;
         default:
@@ -74,12 +78,17 @@ export const MsgCreatePaper = {
     return message;
   },
 
-  fromJSON(object: any): MsgCreatePaper {
-    const message = { ...baseMsgCreatePaper } as MsgCreatePaper;
+  fromJSON(object: any): Paper {
+    const message = { ...basePaper } as Paper;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = String(object.creator);
     } else {
       message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = Number(object.id);
+    } else {
+      message.id = 0;
     }
     if (object.host !== undefined && object.host !== null) {
       message.host = String(object.host);
@@ -104,9 +113,10 @@ export const MsgCreatePaper = {
     return message;
   },
 
-  toJSON(message: MsgCreatePaper): unknown {
+  toJSON(message: Paper): unknown {
     const obj: any = {};
     message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
     message.host !== undefined && (obj.host = message.host);
     message.paperName !== undefined && (obj.paperName = message.paperName);
     message.owner !== undefined && (obj.owner = message.owner);
@@ -114,12 +124,17 @@ export const MsgCreatePaper = {
     return obj;
   },
 
-  fromPartial(object: DeepPartial<MsgCreatePaper>): MsgCreatePaper {
-    const message = { ...baseMsgCreatePaper } as MsgCreatePaper;
+  fromPartial(object: DeepPartial<Paper>): Paper {
+    const message = { ...basePaper } as Paper;
     if (object.creator !== undefined && object.creator !== null) {
       message.creator = object.creator;
     } else {
       message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = 0;
     }
     if (object.host !== undefined && object.host !== null) {
       message.host = object.host;
@@ -144,94 +159,6 @@ export const MsgCreatePaper = {
     return message;
   },
 };
-
-const baseMsgCreatePaperResponse: object = { id: 0 };
-
-export const MsgCreatePaperResponse = {
-  encode(
-    message: MsgCreatePaperResponse,
-    writer: Writer = Writer.create()
-  ): Writer {
-    if (message.id !== 0) {
-      writer.uint32(8).uint64(message.id);
-    }
-    return writer;
-  },
-
-  decode(input: Reader | Uint8Array, length?: number): MsgCreatePaperResponse {
-    const reader = input instanceof Uint8Array ? new Reader(input) : input;
-    let end = length === undefined ? reader.len : reader.pos + length;
-    const message = { ...baseMsgCreatePaperResponse } as MsgCreatePaperResponse;
-    while (reader.pos < end) {
-      const tag = reader.uint32();
-      switch (tag >>> 3) {
-        case 1:
-          message.id = longToNumber(reader.uint64() as Long);
-          break;
-        default:
-          reader.skipType(tag & 7);
-          break;
-      }
-    }
-    return message;
-  },
-
-  fromJSON(object: any): MsgCreatePaperResponse {
-    const message = { ...baseMsgCreatePaperResponse } as MsgCreatePaperResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = Number(object.id);
-    } else {
-      message.id = 0;
-    }
-    return message;
-  },
-
-  toJSON(message: MsgCreatePaperResponse): unknown {
-    const obj: any = {};
-    message.id !== undefined && (obj.id = message.id);
-    return obj;
-  },
-
-  fromPartial(
-    object: DeepPartial<MsgCreatePaperResponse>
-  ): MsgCreatePaperResponse {
-    const message = { ...baseMsgCreatePaperResponse } as MsgCreatePaperResponse;
-    if (object.id !== undefined && object.id !== null) {
-      message.id = object.id;
-    } else {
-      message.id = 0;
-    }
-    return message;
-  },
-};
-
-/** Msg defines the Msg service. */
-export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
-  CreatePaper(request: MsgCreatePaper): Promise<MsgCreatePaperResponse>;
-}
-
-export class MsgClientImpl implements Msg {
-  private readonly rpc: Rpc;
-  constructor(rpc: Rpc) {
-    this.rpc = rpc;
-  }
-  CreatePaper(request: MsgCreatePaper): Promise<MsgCreatePaperResponse> {
-    const data = MsgCreatePaper.encode(request).finish();
-    const promise = this.rpc.request("paper.paper.Msg", "CreatePaper", data);
-    return promise.then((data) =>
-      MsgCreatePaperResponse.decode(new Reader(data))
-    );
-  }
-}
-
-interface Rpc {
-  request(
-    service: string,
-    method: string,
-    data: Uint8Array
-  ): Promise<Uint8Array>;
-}
 
 declare var self: any | undefined;
 declare var window: any | undefined;

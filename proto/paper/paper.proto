@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package paper.paper;
+
+option go_package = "paper/x/paper/types";
+
+message Paper {
+  string creator = 1;
+  uint64 id = 2;
+  string host = 3;
+  string paperName = 4;
+  string owner = 5;
+  string price = 6;
+}

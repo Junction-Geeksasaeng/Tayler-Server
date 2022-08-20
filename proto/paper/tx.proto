@@ -7,7 +7,20 @@ option go_package = "paper/x/paper/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+      rpc CreatePaper(MsgCreatePaper) returns (MsgCreatePaperResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
+}
+
+message MsgCreatePaper {
+  string creator = 1;
+  string host = 2;
+  string paperName = 3;
+  string owner = 4;
+  string price = 5;
+}
+
+message MsgCreatePaperResponse {
+  uint64 id = 1;
 }
 
 // this line is used by starport scaffolding # proto/tx/message
