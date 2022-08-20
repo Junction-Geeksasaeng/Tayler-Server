@@ -74,3 +74,14 @@ func (k Keeper) AppendPaper(ctx sdk.Context, paper types.Paper) uint64 {
 	k.SetPaperCount(ctx, count+1)
 	return count
 }
+
+func (k Keeper) ChangeOwner(ctx sdk.Context, id string, newOwner string, newPrice string) {
+	// get 으로 불러오고 필요한 필드 수정한 객체를 두 번째 인자에 전달
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PaperKey))
+
+	// byteKey := make([]byte, 8)
+	// binary.BigEndian.PutUint64(uint64(id))
+
+	// store.Set()
+}

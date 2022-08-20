@@ -23,7 +23,9 @@ export interface MsgUpdatePaper {
   newPrice: string;
 }
 
-export interface MsgUpdatePaperResponse {}
+export interface MsgUpdatePaperResponse {
+  isSuccess: boolean;
+}
 
 const baseMsgCreatePaper: object = {
   creator: "",
@@ -325,10 +327,16 @@ export const MsgUpdatePaper = {
   },
 };
 
-const baseMsgUpdatePaperResponse: object = {};
+const baseMsgUpdatePaperResponse: object = { isSuccess: false };
 
 export const MsgUpdatePaperResponse = {
-  encode(_: MsgUpdatePaperResponse, writer: Writer = Writer.create()): Writer {
+  encode(
+    message: MsgUpdatePaperResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.isSuccess === true) {
+      writer.uint32(8).bool(message.isSuccess);
+    }
     return writer;
   },
 
@@ -339,6 +347,9 @@ export const MsgUpdatePaperResponse = {
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1:
+          message.isSuccess = reader.bool();
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -347,18 +358,31 @@ export const MsgUpdatePaperResponse = {
     return message;
   },
 
-  fromJSON(_: any): MsgUpdatePaperResponse {
+  fromJSON(object: any): MsgUpdatePaperResponse {
     const message = { ...baseMsgUpdatePaperResponse } as MsgUpdatePaperResponse;
+    if (object.isSuccess !== undefined && object.isSuccess !== null) {
+      message.isSuccess = Boolean(object.isSuccess);
+    } else {
+      message.isSuccess = false;
+    }
     return message;
   },
 
-  toJSON(_: MsgUpdatePaperResponse): unknown {
+  toJSON(message: MsgUpdatePaperResponse): unknown {
     const obj: any = {};
+    message.isSuccess !== undefined && (obj.isSuccess = message.isSuccess);
     return obj;
   },
 
-  fromPartial(_: DeepPartial<MsgUpdatePaperResponse>): MsgUpdatePaperResponse {
+  fromPartial(
+    object: DeepPartial<MsgUpdatePaperResponse>
+  ): MsgUpdatePaperResponse {
     const message = { ...baseMsgUpdatePaperResponse } as MsgUpdatePaperResponse;
+    if (object.isSuccess !== undefined && object.isSuccess !== null) {
+      message.isSuccess = object.isSuccess;
+    } else {
+      message.isSuccess = false;
+    }
     return message;
   },
 };

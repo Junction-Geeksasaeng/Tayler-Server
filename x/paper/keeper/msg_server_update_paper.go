@@ -3,15 +3,15 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"paper/x/paper/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k msgServer) UpdatePaper(goCtx context.Context, msg *types.MsgUpdatePaper) (*types.MsgUpdatePaperResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: Handling the message
-	_ = ctx
+	k.ChangeOwner(ctx, msg.Id, msg.NewOwner, msg.NewPrice)
 
-	return &types.MsgUpdatePaperResponse{}, nil
+	return &types.MsgUpdatePaperResponse{IsSuccess: true}, nil
 }

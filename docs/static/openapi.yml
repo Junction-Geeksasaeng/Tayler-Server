@@ -51744,6 +51744,9 @@ definitions:
         format: uint64
   paper.paper.MsgUpdatePaperResponse:
     type: object
+    properties:
+      isSuccess:
+        type: boolean
   paper.paper.Paper:
     type: object
     properties:

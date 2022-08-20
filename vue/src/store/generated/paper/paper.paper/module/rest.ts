@@ -14,7 +14,9 @@ export interface PaperMsgCreatePaperResponse {
   id?: string;
 }
 
-export type PaperMsgUpdatePaperResponse = object;
+export interface PaperMsgUpdatePaperResponse {
+  isSuccess?: boolean;
+}
 
 export interface PaperPaper {
   creator?: string;
