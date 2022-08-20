@@ -8,6 +8,7 @@ option go_package = "paper/x/paper/types";
 // Msg defines the Msg service.
 service Msg {
       rpc CreatePaper(MsgCreatePaper) returns (MsgCreatePaperResponse);
+  rpc UpdatePaper(MsgUpdatePaper) returns (MsgUpdatePaperResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -21,6 +22,16 @@ message MsgCreatePaper {
 
 message MsgCreatePaperResponse {
   uint64 id = 1;
+}
+
+message MsgUpdatePaper {
+  string creator = 1;
+  string id = 2;
+  string newOwner = 3;
+  string newPrice = 4;
+}
+
+message MsgUpdatePaperResponse {
 }
 
 // this line is used by starport scaffolding # proto/tx/message

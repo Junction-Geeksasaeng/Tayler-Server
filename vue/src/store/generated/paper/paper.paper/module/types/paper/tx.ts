@@ -16,6 +16,15 @@ export interface MsgCreatePaperResponse {
   id: number;
 }
 
+export interface MsgUpdatePaper {
+  creator: string;
+  id: string;
+  newOwner: string;
+  newPrice: string;
+}
+
+export interface MsgUpdatePaperResponse {}
+
 const baseMsgCreatePaper: object = {
   creator: "",
   host: "",
@@ -205,10 +214,160 @@ export const MsgCreatePaperResponse = {
   },
 };
 
+const baseMsgUpdatePaper: object = {
+  creator: "",
+  id: "",
+  newOwner: "",
+  newPrice: "",
+};
+
+export const MsgUpdatePaper = {
+  encode(message: MsgUpdatePaper, writer: Writer = Writer.create()): Writer {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.id !== "") {
+      writer.uint32(18).string(message.id);
+    }
+    if (message.newOwner !== "") {
+      writer.uint32(26).string(message.newOwner);
+    }
+    if (message.newPrice !== "") {
+      writer.uint32(34).string(message.newPrice);
+    }
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdatePaper {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdatePaper } as MsgUpdatePaper;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.creator = reader.string();
+          break;
+        case 2:
+          message.id = reader.string();
+          break;
+        case 3:
+          message.newOwner = reader.string();
+          break;
+        case 4:
+          message.newPrice = reader.string();
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdatePaper {
+    const message = { ...baseMsgUpdatePaper } as MsgUpdatePaper;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = String(object.creator);
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = String(object.id);
+    } else {
+      message.id = "";
+    }
+    if (object.newOwner !== undefined && object.newOwner !== null) {
+      message.newOwner = String(object.newOwner);
+    } else {
+      message.newOwner = "";
+    }
+    if (object.newPrice !== undefined && object.newPrice !== null) {
+      message.newPrice = String(object.newPrice);
+    } else {
+      message.newPrice = "";
+    }
+    return message;
+  },
+
+  toJSON(message: MsgUpdatePaper): unknown {
+    const obj: any = {};
+    message.creator !== undefined && (obj.creator = message.creator);
+    message.id !== undefined && (obj.id = message.id);
+    message.newOwner !== undefined && (obj.newOwner = message.newOwner);
+    message.newPrice !== undefined && (obj.newPrice = message.newPrice);
+    return obj;
+  },
+
+  fromPartial(object: DeepPartial<MsgUpdatePaper>): MsgUpdatePaper {
+    const message = { ...baseMsgUpdatePaper } as MsgUpdatePaper;
+    if (object.creator !== undefined && object.creator !== null) {
+      message.creator = object.creator;
+    } else {
+      message.creator = "";
+    }
+    if (object.id !== undefined && object.id !== null) {
+      message.id = object.id;
+    } else {
+      message.id = "";
+    }
+    if (object.newOwner !== undefined && object.newOwner !== null) {
+      message.newOwner = object.newOwner;
+    } else {
+      message.newOwner = "";
+    }
+    if (object.newPrice !== undefined && object.newPrice !== null) {
+      message.newPrice = object.newPrice;
+    } else {
+      message.newPrice = "";
+    }
+    return message;
+  },
+};
+
+const baseMsgUpdatePaperResponse: object = {};
+
+export const MsgUpdatePaperResponse = {
+  encode(_: MsgUpdatePaperResponse, writer: Writer = Writer.create()): Writer {
+    return writer;
+  },
+
+  decode(input: Reader | Uint8Array, length?: number): MsgUpdatePaperResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = { ...baseMsgUpdatePaperResponse } as MsgUpdatePaperResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdatePaperResponse {
+    const message = { ...baseMsgUpdatePaperResponse } as MsgUpdatePaperResponse;
+    return message;
+  },
+
+  toJSON(_: MsgUpdatePaperResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(_: DeepPartial<MsgUpdatePaperResponse>): MsgUpdatePaperResponse {
+    const message = { ...baseMsgUpdatePaperResponse } as MsgUpdatePaperResponse;
+    return message;
+  },
+};
+
 /** Msg defines the Msg service. */
 export interface Msg {
-  /** this line is used by starport scaffolding # proto/tx/rpc */
   CreatePaper(request: MsgCreatePaper): Promise<MsgCreatePaperResponse>;
+  /** this line is used by starport scaffolding # proto/tx/rpc */
+  UpdatePaper(request: MsgUpdatePaper): Promise<MsgUpdatePaperResponse>;
 }
 
 export class MsgClientImpl implements Msg {
@@ -221,6 +380,14 @@ export class MsgClientImpl implements Msg {
     const promise = this.rpc.request("paper.paper.Msg", "CreatePaper", data);
     return promise.then((data) =>
       MsgCreatePaperResponse.decode(new Reader(data))
+    );
+  }
+
+  UpdatePaper(request: MsgUpdatePaper): Promise<MsgUpdatePaperResponse> {
+    const data = MsgUpdatePaper.encode(request).finish();
+    const promise = this.rpc.request("paper.paper.Msg", "UpdatePaper", data);
+    return promise.then((data) =>
+      MsgUpdatePaperResponse.decode(new Reader(data))
     );
   }
 }

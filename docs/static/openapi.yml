@@ -51742,6 +51742,8 @@ definitions:
       id:
         type: string
         format: uint64
+  paper.paper.MsgUpdatePaperResponse:
+    type: object
   paper.paper.Paper:
     type: object
     properties:
