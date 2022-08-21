@@ -7,6 +7,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"paper/x/paper/types"
+
+	"fmt"
+	"strconv"
 )
 
 // func (k Keeper) AppendPost() uint64 {
@@ -75,13 +78,46 @@ func (k Keeper) AppendPaper(ctx sdk.Context, paper types.Paper) uint64 {
 	return count
 }
 
-func (k Keeper) ChangeOwner(ctx sdk.Context, id string, newOwner string, newPrice string) {
-	// get 으로 불러오고 필요한 필드 수정한 객체를 두 번째 인자에 전달
+func (k Keeper) GetPaper(ctx sdk.Context, id uint64) (val types.Paper, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PaperKey))
 
-	// store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PaperKey))
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, id)
 
-	// byteKey := make([]byte, 8)
-	// binary.BigEndian.PutUint64(uint64(id))
+	b := store.Get(bz)
+	if b == nil {
+		return val, false
+	}
 
-	// store.Set()
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
+func (k Keeper) SetPaper(ctx sdk.Context, paper types.Paper) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PaperKey))
+
+	byteKey := make([]byte, 8)
+	binary.BigEndian.PutUint64(byteKey, paper.Id)
+
+	newPaper := k.cdc.MustMarshal(&paper)
+
+	store.Set(byteKey, newPaper)
+}
+
+func (k Keeper) ChangeOwnerAndPrice(ctx sdk.Context, id string, newOwner string, newPrice string) bool {
+	targetId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	paper, found := k.GetPaper(ctx, targetId)
+	if !found {
+		return false
+	}
+
+	paper.Owner = newOwner
+	paper.Price = newPrice
+
+	k.SetPaper(ctx, paper)
+	return true
 }
